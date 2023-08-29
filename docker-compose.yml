@@ -18,15 +18,12 @@ services:
   pgdb:
     image: postgres:latest
     container_name: pgdb
-    command: sh -c "chmod -R 755 /var/lib/postgresql/data/pgdata"
     environment:
       POSTGRES_DB: AvitoTestTaskDB
       POSTGRES_USER: AvitoUser
       POSTGRES_PASSWORD: qwerty
-      PGDATA: "/var/lib/postgresql/data/pgdata"
     volumes:
       - ./sql/create.sql:/docker-entrypoint-initdb.d/create.sql
-      - ./data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     healthcheck:
