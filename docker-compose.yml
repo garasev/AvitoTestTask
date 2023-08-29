@@ -18,7 +18,7 @@ services:
   pgdb:
     image: postgres:latest
     container_name: pgdb
-    command: sh -c "chmod -R 755 /var/lib/postgresql/data/pgdata
+    command: sh -c "chmod -R 755 /var/lib/postgresql/data/pgdata"
     environment:
       POSTGRES_DB: AvitoTestTaskDB
       POSTGRES_USER: AvitoUser
