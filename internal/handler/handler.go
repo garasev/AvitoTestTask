@@ -86,6 +86,7 @@ func (h *Handler) AddSlug(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.logger.Error(err.Error())
 		errorResponse(w, "Slug with the same name already exists", http.StatusConflict)
+		return
 	}
 	h.logger.Info("Success: new slug with id=" + strconv.Itoa(id))
 	errorResponse(w, "Success: new slug with id="+strconv.Itoa(id), http.StatusOK)
