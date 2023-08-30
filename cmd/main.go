@@ -11,6 +11,9 @@ import (
 	_ "github.com/lib/pq"
 
 	"github.com/garasev/AvitoTestTask/config"
+	"github.com/garasev/AvitoTestTask/internal/handler"
+	"github.com/garasev/AvitoTestTask/internal/repository/postgresql"
+	"github.com/garasev/AvitoTestTask/internal/service"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 )
@@ -28,9 +31,11 @@ func main() {
 		return
 	}
 	log.Info("DB was connected")
-	db.Query("")
+	repo := postgresql.NewPostgresRepo(db)
+	service := service.NewService(repo)
+	handler := handler.NewHandler(*service, *log)
 
-	router := Router()
+	router := Router(*handler)
 	log.Info("Router was initialized")
 
 	log.Info("Server is starting...")
@@ -43,10 +48,12 @@ func main() {
 
 }
 
-func Router() http.Handler {
+func Router(handler handler.Handler) http.Handler {
 	r := chi.NewRouter()
 
 	r.Use(middleware.Recoverer)
+
+	r.Get("/{id}", handler.GetSlug)
 
 	return r
 }
