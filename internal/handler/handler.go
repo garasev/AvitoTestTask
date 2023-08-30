@@ -80,7 +80,7 @@ func (h *Handler) AddSlug(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	h.service.AddSlug(slug)
-	errorResponse(w, "Success", http.StatusOK)
+	id, err := h.service.AddSlug(slug)
+	errorResponse(w, "Success: new slug with id="+strconv.Itoa(id), http.StatusOK)
 	return
 }
