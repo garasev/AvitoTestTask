@@ -45,3 +45,32 @@ func (r *PostgresqlRep) GetSlug(id int) (models.Slug, error) {
 
 	return slug, nil
 }
+
+func (r *PostgresqlRep) GetSlugs() ([]models.Slug, error) {
+	var slugs []models.Slug
+	querySql := `SELECT name FROM slug;`
+
+	rows, err := r.DB.Query(querySql)
+
+	if err != nil {
+		return slugs, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var slug models.Slug
+		err := rows.Scan(
+			&slug.Name,
+		)
+		if err != nil {
+			return slugs, err
+		}
+		slugs = append(slugs, slug)
+	}
+
+	if err = rows.Err(); err != nil {
+		return slugs, err
+	}
+
+	return slugs, nil
+}

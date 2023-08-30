@@ -48,7 +48,7 @@ func (h *Handler) GetSlug(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	jsonOrder, err := json.Marshal(slug)
+	jsonSlug, err := json.Marshal(slug)
 	if err != nil {
 		h.logger.Error(err.Error())
 		errorResponse(w, "Internal Server Error: "+err.Error(), http.StatusInternalServerError)
@@ -57,7 +57,27 @@ func (h *Handler) GetSlug(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write(jsonOrder)
+	w.Write(jsonSlug)
+}
+
+func (h *Handler) GetSlugs(w http.ResponseWriter, r *http.Request) {
+	slugs, err := h.service.GetSlugs()
+	if err != nil {
+		h.logger.Error(err.Error())
+		errorResponse(w, "Internal Server Error: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	jsonSlugs, err := json.Marshal(slugs)
+	if err != nil {
+		h.logger.Error(err.Error())
+		errorResponse(w, "Internal Server Error: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonSlugs)
 }
 
 func (h *Handler) AddSlug(w http.ResponseWriter, r *http.Request) {
