@@ -35,7 +35,7 @@ func (r *PostgresqlRep) AddSlug(slug models.Slug) (int, error) {
 
 func (r *PostgresqlRep) GetSlug(id int) (models.Slug, error) {
 	var slug models.Slug
-	querySql := `SELECT name FROM slug WHERE id==` + strconv.Itoa(id)
+	querySql := `SELECT name FROM slug WHERE id=` + strconv.Itoa(id)
 
 	err := r.DB.QueryRow(
 		querySql,
