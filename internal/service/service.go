@@ -1,13 +1,24 @@
 package service
 
-import "github.com/garasev/AvitoTestTask/internal/repository"
+import (
+	"github.com/garasev/AvitoTestTask/internal/models"
+	"github.com/garasev/AvitoTestTask/internal/repository"
+)
 
 type Service struct {
-	Repo repository.Repository
+	repo repository.Repository
 }
 
 func NewService(repo repository.Repository) *Service {
 	return &Service{
-		Repo: repo,
+		repo: repo,
 	}
+}
+
+func (s *Service) GetSlug(id int) (models.Slug, error) {
+	return s.repo.GetSlug(id)
+}
+
+func (s *Service) AddSlug(slug models.Slug) (int, error) {
+	return s.repo.AddSlug(slug)
 }
