@@ -19,7 +19,7 @@ func NewPostgresRepo(conn *sql.DB) *PostgresqlRep {
 
 func (r *PostgresqlRep) AddSlug(slug models.Slug) (int, error) {
 	var id int
-	querySql := `INSERT INTO slug (name) VALUES ($1) RETURNING id`
+	querySql := `INSERT INTO slug (name) VALUES ($1) RETURNING id;`
 
 	err := r.DB.QueryRow(
 		querySql,
@@ -35,12 +35,9 @@ func (r *PostgresqlRep) AddSlug(slug models.Slug) (int, error) {
 
 func (r *PostgresqlRep) GetSlug(id int) (models.Slug, error) {
 	var slug models.Slug
-	querySql := `SELECT name FROM slug WHERE id=` + strconv.Itoa(id)
+	querySql := `SELECT name FROM slug WHERE id=` + strconv.Itoa(id) + `;`
 
-	err := r.DB.QueryRow(
-		querySql,
-		slug.Name,
-	).Scan(&slug.Name)
+	err := r.DB.QueryRow(querySql).Scan(&slug.Name)
 
 	if err != nil {
 		return slug, err
