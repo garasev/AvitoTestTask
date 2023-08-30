@@ -53,7 +53,10 @@ func Router(handler handler.Handler) http.Handler {
 
 	r.Use(middleware.Recoverer)
 
-	r.Get("/{id}", handler.GetSlug)
+	r.Route("/api", func(r chi.Router) {
+		r.Get("/{id}", handler.GetSlug)
+		r.Post("/", handler.AddSlug)
+	})
 
 	return r
 }
