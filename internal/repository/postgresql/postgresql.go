@@ -76,9 +76,9 @@ func (r *PostgresqlRep) GetSlugs() ([]models.Slug, error) {
 }
 
 func (r *PostgresqlRep) DeleteSlug(slug models.Slug) error {
-	querySql := `DELETE FROM slug WHERE name =` + slug.Name + `;`
+	querySql := `DELETE FROM slug WHERE name =$1;`
 
-	err := r.DB.QueryRow(querySql)
+	_, err := r.DB.Exec(querySql, slug.Name)
 
 	if err != nil {
 		return err
