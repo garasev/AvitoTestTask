@@ -68,7 +68,7 @@ func setupLogger(cfg config.Config) *slog.Logger {
 
 func ConnectDB(cfg config.Config) (*sql.DB, error) {
 	dsn := fmt.Sprintf(
-		"postgres://%s:%s@%s%s/%s?sslmode=disable",
+		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
 		cfg.DataBase.Username,
 		cfg.DataBase.Password,
 		cfg.DataBase.Host,
