@@ -56,6 +56,7 @@ func Router(handler handler.Handler) http.Handler {
 	r.Route("/api", func(r chi.Router) {
 		r.Get("/", handler.GetSlugs)
 		r.Get("/{id}", handler.GetSlug)
+		r.Delete("/{id}", handler.GetSlug)
 		r.Post("/", handler.AddSlug)
 	})
 

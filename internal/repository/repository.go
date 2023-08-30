@@ -7,4 +7,5 @@ type Repository interface {
 	AddSlug(slug models.Slug) (int, error)
 	GetSlug(id int) (models.Slug, error)
 	GetSlugs() ([]models.Slug, error)
+	DeleteSlug(slug models.Slug) error
 }

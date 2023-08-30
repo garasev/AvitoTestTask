@@ -26,3 +26,7 @@ func (s *Service) GetSlugs() ([]models.Slug, error) {
 func (s *Service) AddSlug(slug models.Slug) (int, error) {
 	return s.repo.AddSlug(slug)
 }
+
+func (s *Service) DeleteSlug(slug models.Slug) error {
+	return s.repo.DeleteSlug(slug)
+}
