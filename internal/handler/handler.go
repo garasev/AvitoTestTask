@@ -63,6 +63,7 @@ func (h *Handler) GetSlug(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) AddSlug(w http.ResponseWriter, r *http.Request) {
 	headerContentTtype := r.Header.Get("Content-Type")
 	if headerContentTtype != "application/json" {
+		h.logger.Error("Content Type is not application/json")
 		errorResponse(w, "Content Type is not application/json", http.StatusUnsupportedMediaType)
 		return
 	}
@@ -73,6 +74,7 @@ func (h *Handler) AddSlug(w http.ResponseWriter, r *http.Request) {
 	decoder.DisallowUnknownFields()
 	err := decoder.Decode(&slug)
 	if err != nil {
+		h.logger.Error(err.Error())
 		if errors.As(err, &unmarshalErr) {
 			errorResponse(w, "Bad Request. Wrong Type provided for field "+unmarshalErr.Field, http.StatusBadRequest)
 		} else {
@@ -81,6 +83,11 @@ func (h *Handler) AddSlug(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	id, err := h.service.AddSlug(slug)
+	if err != nil {
+		h.logger.Error(err.Error())
+		errorResponse(w, "Slug with the same name already exists", http.StatusConflict)
+	}
+	h.logger.Info("Success: new slug with id=" + strconv.Itoa(id))
 	errorResponse(w, "Success: new slug with id="+strconv.Itoa(id), http.StatusOK)
 	return
 }
