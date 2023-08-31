@@ -5,6 +5,7 @@ import (
 	"encoding/csv"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"strconv"
@@ -360,7 +361,7 @@ func (h *Handler) GetUserArchive(w http.ResponseWriter, r *http.Request) {
 		errorResponse(w, "Bad Request "+err.Error(), http.StatusBadRequest)
 		return
 	}
-
+	fmt.Println(1)
 	user, err := h.service.CheckUser(id)
 	if err != nil {
 		h.logger.Error(err.Error())
@@ -372,7 +373,7 @@ func (h *Handler) GetUserArchive(w http.ResponseWriter, r *http.Request) {
 		errorResponse(w, "User with id = "+idStr+" does'n exists", http.StatusBadRequest)
 		return
 	}
-
+	fmt.Println(2)
 	year, err := strconv.Atoi(r.URL.Query().Get("year"))
 	if err != nil {
 		h.logger.Error(err.Error())
@@ -386,17 +387,17 @@ func (h *Handler) GetUserArchive(w http.ResponseWriter, r *http.Request) {
 	}
 	month, err := strconv.Atoi(r.URL.Query().Get("month"))
 	data := time.Date(year, time.Month(month), 1, 0, 0, 0, 0, time.UTC)
-
+	fmt.Println(3)
 	archives, err := h.service.GetUserArchive(id, data)
 	if err != nil {
 		h.logger.Error(err.Error())
 		errorResponse(w, "Internal Server Error: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
-
+	fmt.Println(4)
 	b := &bytes.Buffer{}
 	wr := csv.NewWriter(b)
-
+	fmt.Println(5)
 	for _, arch := range archives {
 		err = wr.Write(arch.Write())
 		if err != nil {
@@ -406,9 +407,9 @@ func (h *Handler) GetUserArchive(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	wr.Flush()
-
+	fmt.Println(6)
 	w.Header().Set("Content-Type", "text/csv")
 	w.Header().Set("Content-Disposition", "attachment; filename=data.csv")
-
+	fmt.Println(7)
 	w.Write(b.Bytes())
 }
