@@ -179,7 +179,10 @@ func (r *PostgresqlRep) CheckSlugsExist(slugs []models.Slug) (bool, error) {
 		placeholders[i] = fmt.Sprintf("$%d", i+1)
 		values[i] = slug.Name
 	}
-
+	fmt.Println(slugs)
+	fmt.Println(values)
+	fmt.Println(placeholders)
+	fmt.Println(strings.Join(placeholders, ", "))
 	query := fmt.Sprintf("SELECT name FROM slug WHERE name IN (%s)", strings.Join(placeholders, ", "))
 
 	rows, err := r.DB.Query(query, values...)
