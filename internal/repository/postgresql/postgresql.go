@@ -2,7 +2,9 @@ package postgresql
 
 import (
 	"database/sql"
+	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/garasev/AvitoTestTask/internal/models"
 )
@@ -17,20 +19,19 @@ func NewPostgresRepo(conn *sql.DB) *PostgresqlRep {
 	}
 }
 
-func (r *PostgresqlRep) AddSlug(slug models.Slug) (int, error) {
-	var id int
+func (r *PostgresqlRep) AddSlug(slug models.Slug) error {
 	querySql := `INSERT INTO slug (name) VALUES ($1) RETURNING id;`
 
 	err := r.DB.QueryRow(
 		querySql,
 		slug.Name,
-	).Scan(&id)
+	)
 
 	if err != nil {
-		return 0, err
+		return err
 	}
 
-	return id, nil
+	return nil
 }
 
 func (r *PostgresqlRep) GetSlug(id int) (models.Slug, error) {
@@ -118,7 +119,7 @@ func (r *PostgresqlRep) GetUsers() ([]models.AvitoUser, error) {
 
 func (r *PostgresqlRep) GetUserSlugs(id int) ([]models.Slug, error) {
 	var slugs []models.Slug
-	querySql := `SELECT s.name FROM user_slug AS us JOIN slug AS s ON us.slug_id = s.id WHERE us.dt_end > NOW() OR us.dt_end IS NULL;`
+	querySql := `SELECT slug_name FROM user_slug WHERE dt_end > NOW() OR dt_end IS NULL;`
 
 	rows, err := r.DB.Query(querySql)
 
@@ -155,5 +156,91 @@ func (r *PostgresqlRep) AddUsers(cnt int) error {
 			return err
 		}
 	}
+	return nil
+}
+
+func (r *PostgresqlRep) CheckUserExist(id int) (bool, error) {
+	var exists bool
+	query := fmt.Sprintf("SELECT EXISTS (SELECT 1 FROM avito_user WHERE %s);", "id ="+strconv.Itoa(id))
+
+	err := r.DB.QueryRow(query).Scan(&exists)
+	if err != nil {
+		return false, err
+	}
+
+	return exists, nil
+}
+
+func (r *PostgresqlRep) CheckSlugsExist(slugs []models.Slug) (bool, error) {
+	placeholders := make([]string, len(slugs))
+	values := make([]interface{}, len(slugs))
+
+	for i, slug := range slugs {
+		placeholders[i] = fmt.Sprintf("$%d", i+1)
+		values[i] = slug.Name
+	}
+
+	query := fmt.Sprintf("SELECT name FROM slugs WHERE slug IN (%s)", strings.Join(placeholders, ", "))
+
+	rows, err := r.DB.Query(query, values...)
+	if err != nil {
+		return false, err
+	}
+	defer rows.Close()
+
+	existingSlugs := make(map[string]bool)
+
+	for rows.Next() {
+		var name string
+		if err := rows.Scan(&name); err != nil {
+			return false, err
+		}
+		existingSlugs[name] = true
+	}
+
+	if err := rows.Err(); err != nil {
+		return false, err
+	}
+	for _, slug := range slugs {
+		if !existingSlugs[slug.Name] {
+			return false, nil
+		}
+	}
+
+	return true, nil
+}
+
+func (r *PostgresqlRep) AddSlugsUser(id int, slugs []models.Slug) error {
+	for _, slug := range slugs {
+		querySql := `INSERT INTO user_slug (user_id, slug_name) VALUES ($1, $2);`
+
+		err := r.DB.QueryRow(
+			querySql,
+			id,
+			slug.Name,
+		)
+
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (r *PostgresqlRep) DeleteSlugsUser(id int, slugs []models.Slug) error {
+	for _, slug := range slugs {
+		querySql := `DELETE FROM user_slug WHERE user_id = $1 AND name = $2;`
+
+		_, err := r.DB.Exec(
+			querySql,
+			id,
+			slug.Name,
+		)
+
+		if err != nil {
+			return err
+		}
+	}
+
 	return nil
 }

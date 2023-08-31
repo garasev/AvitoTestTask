@@ -22,3 +22,8 @@ type Archive struct {
 type AvitoUser struct {
 	Id int `json:"id"`
 }
+
+type Slugs struct {
+	AddSlugs    []Slug `json:"add_slugs"`
+	DeleteSlugs []Slug `json:"delete_slugs"`
+}

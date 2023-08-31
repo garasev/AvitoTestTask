@@ -102,14 +102,14 @@ func (h *Handler) AddSlug(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	id, err := h.service.AddSlug(slug)
+	err = h.service.AddSlug(slug)
 	if err != nil {
 		h.logger.Error(err.Error())
 		errorResponse(w, "Slug with the same name already exists", http.StatusConflict)
 		return
 	}
-	h.logger.Info("Success: new slug with id=" + strconv.Itoa(id))
-	errorResponse(w, "Success: new slug with id="+strconv.Itoa(id), http.StatusOK)
+	h.logger.Info("Success: new slug was added")
+	errorResponse(w, "Success: new slug was added", http.StatusOK)
 	return
 }
 
@@ -142,7 +142,7 @@ func (h *Handler) DeleteSlug(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	h.logger.Info("Successful deletion")
-	errorResponse(w, "Successful deletion", http.StatusNoContent)
+	errorResponse(w, "Successful deletion", http.StatusOK)
 	return
 }
 
@@ -208,5 +208,88 @@ func (h *Handler) AddUsers(w http.ResponseWriter, r *http.Request) {
 	}
 
 	errorResponse(w, "Users added:"+cntStr, http.StatusOK)
+	return
+}
+
+func (h *Handler) AddUserSlugs(w http.ResponseWriter, r *http.Request) {
+	idStr := chi.URLParam(r, "id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		h.logger.Error(err.Error())
+		errorResponse(w, "Bad Request "+err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	user, err := h.service.CheckUser(id)
+	if err != nil {
+		h.logger.Error(err.Error())
+		errorResponse(w, "Internal Server Error: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if !user {
+		h.logger.Error("User with id = " + idStr + " does'n exists")
+		errorResponse(w, "User with id = "+idStr+" does'n exists", http.StatusBadRequest)
+		return
+	}
+
+	headerContentTtype := r.Header.Get("Content-Type")
+	if headerContentTtype != "application/json" {
+		h.logger.Error("Content Type is not application/json")
+		errorResponse(w, "Content Type is not application/json", http.StatusUnsupportedMediaType)
+		return
+	}
+	var slugs models.Slugs
+	var unmarshalErr *json.UnmarshalTypeError
+
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&slugs)
+	if err != nil {
+		h.logger.Error(err.Error())
+		if errors.As(err, &unmarshalErr) {
+			errorResponse(w, "Bad Request. Wrong Type provided for field "+unmarshalErr.Field, http.StatusBadRequest)
+		} else {
+			errorResponse(w, "Bad Request "+err.Error(), http.StatusBadRequest)
+		}
+		return
+	}
+
+	addSlugs, err := h.service.CheckSlugs(slugs.AddSlugs)
+	if err != nil {
+		h.logger.Error(err.Error())
+		errorResponse(w, "Internal Server Error: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if !addSlugs {
+		h.logger.Error("Bad Request. One or more slugs in add_slugs don't exists.")
+		errorResponse(w, "Bad Request. One or more slugs in add_slugs don't exists.", http.StatusBadRequest)
+		return
+	}
+	deleteSlugs, err := h.service.CheckSlugs(slugs.DeleteSlugs)
+	if err != nil {
+		h.logger.Error(err.Error())
+		errorResponse(w, "Internal Server Error: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if !deleteSlugs {
+		h.logger.Error("Bad Request. One or more slugs in delete_slugs don't exists.")
+		errorResponse(w, "Bad Request. One or more slugs in delete_slugs don't exists.", http.StatusBadRequest)
+		return
+	}
+
+	err = h.service.AddSlugsUser(id, slugs.AddSlugs)
+	if err != nil {
+		h.logger.Error(err.Error())
+		errorResponse(w, "Internal Server Error: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	err = h.service.DeleteSlugsUser(id, slugs.DeleteSlugs)
+	if err != nil {
+		h.logger.Error(err.Error())
+		errorResponse(w, "Internal Server Error: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	errorResponse(w, "Success: All slugs have been added and removed accordingly for the user", http.StatusOK)
 	return
 }

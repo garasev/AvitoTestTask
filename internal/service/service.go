@@ -23,7 +23,7 @@ func (s *Service) GetSlugs() ([]models.Slug, error) {
 	return s.repo.GetSlugs()
 }
 
-func (s *Service) AddSlug(slug models.Slug) (int, error) {
+func (s *Service) AddSlug(slug models.Slug) error {
 	return s.repo.AddSlug(slug)
 }
 
@@ -37,4 +37,20 @@ func (s *Service) GetUsers() ([]models.AvitoUser, error) {
 
 func (s *Service) AddUsers(cnt int) error {
 	return s.repo.AddUsers(cnt)
+}
+
+func (s *Service) CheckUser(id int) (bool, error) {
+	return s.repo.CheckUserExist(id)
+}
+
+func (s *Service) CheckSlugs(slugs []models.Slug) (bool, error) {
+	return s.repo.CheckSlugsExist(slugs)
+}
+
+func (s *Service) AddSlugsUser(id int, slugs []models.Slug) error {
+	return s.repo.AddSlugsUser(id, slugs)
+}
+
+func (s *Service) DeleteSlugsUser(id int, slugs []models.Slug) error {
+	return s.repo.DeleteSlugsUser(id, slugs)
 }

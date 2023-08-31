@@ -62,6 +62,7 @@ func Router(handler handler.Handler) http.Handler {
 			r.Get("/", handler.GetUsers)
 			r.Get("/{id}", handler.GetUserSlugs)
 			r.Post("/{cnt}", handler.AddUsers)
+			r.Post("/{id}", handler.AddUserSlugs)
 		})
 	})
 
