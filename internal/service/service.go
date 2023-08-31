@@ -54,3 +54,7 @@ func (s *Service) AddSlugsUser(id int, slugs []models.Slug) error {
 func (s *Service) DeleteSlugsUser(id int, slugs []models.Slug) error {
 	return s.repo.DeleteSlugsUser(id, slugs)
 }
+
+func (s *Service) GetUserSlugs(id int) ([]models.Slug, error) {
+	return s.repo.GetUserSlugs(id)
+}

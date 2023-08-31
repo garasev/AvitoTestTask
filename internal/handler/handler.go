@@ -167,7 +167,27 @@ func (h *Handler) GetUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) GetUserSlugs(w http.ResponseWriter, r *http.Request) {
-	slugs, err := h.service.GetSlugs()
+	idStr := chi.URLParam(r, "id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		h.logger.Error(err.Error())
+		errorResponse(w, "Bad Request "+err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	user, err := h.service.CheckUser(id)
+	if err != nil {
+		h.logger.Error(err.Error())
+		errorResponse(w, "Internal Server Error: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if !user {
+		h.logger.Error("User with id = " + idStr + " does'n exists")
+		errorResponse(w, "User with id = "+idStr+" does'n exists", http.StatusBadRequest)
+		return
+	}
+
+	slugs, err := h.service.GetUserSlugs(id)
 	if err != nil {
 		h.logger.Error(err.Error())
 		errorResponse(w, "Internal Server Error: "+err.Error(), http.StatusInternalServerError)

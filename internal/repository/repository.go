@@ -17,4 +17,6 @@ type Repository interface {
 
 	AddSlugsUser(id int, slugs []models.Slug) error
 	DeleteSlugsUser(id int, slugs []models.Slug) error
+
+	GetUserSlugs(id int) ([]models.Slug, error)
 }
