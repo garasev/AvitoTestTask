@@ -187,27 +187,41 @@ func (h *Handler) GetUserSlugs(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) AddUsers(w http.ResponseWriter, r *http.Request) {
-	cntStr := chi.URLParam(r, "cnt")
-	cnt, err := strconv.Atoi(cntStr)
-	if err != nil {
-		h.logger.Error(err.Error())
-		errorResponse(w, "Bad Request "+err.Error(), http.StatusBadRequest)
+	headerContentTtype := r.Header.Get("Content-Type")
+	if headerContentTtype != "application/json" {
+		h.logger.Error("Content Type is not application/json")
+		errorResponse(w, "Content Type is not application/json", http.StatusUnsupportedMediaType)
 		return
 	}
-	if cnt <= 0 {
+	var users models.AddUsers
+	var unmarshalErr *json.UnmarshalTypeError
+
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+	err := decoder.Decode(&users)
+	if err != nil {
+		h.logger.Error(err.Error())
+		if errors.As(err, &unmarshalErr) {
+			errorResponse(w, "Bad Request. Wrong Type provided for field "+unmarshalErr.Field, http.StatusBadRequest)
+		} else {
+			errorResponse(w, "Bad Request "+err.Error(), http.StatusBadRequest)
+		}
+		return
+	}
+	if users.Count <= 0 {
 		h.logger.Error("The number of adding users must be greater than 0.")
 		errorResponse(w, "The number of adding users must be greater than 0.", http.StatusBadRequest)
 		return
 	}
 
-	err = h.service.AddUsers(cnt)
+	err = h.service.AddUsers(users.Count)
 	if err != nil {
 		h.logger.Error(err.Error())
 		errorResponse(w, "Internal Server Error: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	errorResponse(w, "Users added:"+cntStr, http.StatusOK)
+	errorResponse(w, "Users added:"+strconv.Itoa(users.Count), http.StatusOK)
 	return
 }
 
@@ -238,7 +252,7 @@ func (h *Handler) AddUserSlugs(w http.ResponseWriter, r *http.Request) {
 		errorResponse(w, "Content Type is not application/json", http.StatusUnsupportedMediaType)
 		return
 	}
-	var slugs models.Slugs
+	var slugs models.AddDeleteSlugs
 	var unmarshalErr *json.UnmarshalTypeError
 
 	decoder := json.NewDecoder(r.Body)

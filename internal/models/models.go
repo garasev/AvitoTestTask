@@ -23,7 +23,11 @@ type AvitoUser struct {
 	Id int `json:"id"`
 }
 
-type Slugs struct {
+type AddDeleteSlugs struct {
 	AddSlugs    []Slug `json:"add_slugs"`
 	DeleteSlugs []Slug `json:"delete_slugs"`
+}
+
+type AddUsers struct {
+	Count int `json:"user_cnt"`
 }
