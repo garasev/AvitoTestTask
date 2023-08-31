@@ -354,6 +354,7 @@ func (h *Handler) AddUserSlugs(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) GetUserArchive(w http.ResponseWriter, r *http.Request) {
+	fmt.Println(0)
 	idStr := chi.URLParam(r, "id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
