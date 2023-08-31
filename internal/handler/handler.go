@@ -38,6 +38,7 @@ func NewHandler(service service.Service, logger slog.Logger) *Handler {
 }
 
 func (h *Handler) GetSlug(w http.ResponseWriter, r *http.Request) {
+	h.logger.Error("GetSlug")
 	idStr := chi.URLParam(r, "id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
@@ -66,6 +67,7 @@ func (h *Handler) GetSlug(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) GetSlugs(w http.ResponseWriter, r *http.Request) {
+	h.logger.Error("GetSlugs")
 	slugs, err := h.service.GetSlugs()
 	if err != nil {
 		h.logger.Error(err.Error())
@@ -86,6 +88,7 @@ func (h *Handler) GetSlugs(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) AddSlug(w http.ResponseWriter, r *http.Request) {
+	h.logger.Error("AddSlug")
 	headerContentTtype := r.Header.Get("Content-Type")
 	if headerContentTtype != "application/json" {
 		h.logger.Error("Content Type is not application/json")
@@ -139,6 +142,7 @@ func (h *Handler) AddSlug(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) DeleteSlug(w http.ResponseWriter, r *http.Request) {
+	h.logger.Error("DeleteSlug")
 	headerContentTtype := r.Header.Get("Content-Type")
 	if headerContentTtype != "application/json" {
 		h.logger.Error("Content Type is not application/json")
@@ -172,6 +176,7 @@ func (h *Handler) DeleteSlug(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) GetUsers(w http.ResponseWriter, r *http.Request) {
+	h.logger.Error("GetUsers")
 	users, err := h.service.GetUsers()
 	if err != nil {
 		h.logger.Error(err.Error())
@@ -192,6 +197,7 @@ func (h *Handler) GetUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) GetUserSlugs(w http.ResponseWriter, r *http.Request) {
+	h.logger.Error("GetUserSlugs")
 	idStr := chi.URLParam(r, "id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
@@ -232,6 +238,7 @@ func (h *Handler) GetUserSlugs(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) AddUsers(w http.ResponseWriter, r *http.Request) {
+	h.logger.Error("AddUsers")
 	headerContentTtype := r.Header.Get("Content-Type")
 	if headerContentTtype != "application/json" {
 		h.logger.Error("Content Type is not application/json")
@@ -271,6 +278,7 @@ func (h *Handler) AddUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) AddUserSlugs(w http.ResponseWriter, r *http.Request) {
+	h.logger.Error("AddUserSlugs")
 	idStr := chi.URLParam(r, "id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
@@ -354,6 +362,7 @@ func (h *Handler) AddUserSlugs(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) GetUserArchive(w http.ResponseWriter, r *http.Request) {
+	h.logger.Error("GetUserArchive")
 	fmt.Println(0)
 	idStr := chi.URLParam(r, "id")
 	id, err := strconv.Atoi(idStr)
