@@ -120,7 +120,7 @@ $ make stop
   ],
   "duration_minutes": 60
 }
-
+```
 
 ### AddUsers - JSON
 
