@@ -26,7 +26,7 @@ type AvitoUser struct {
 type AddDeleteSlugs struct {
 	AddSlugs     []Slug `json:"add_slugs"`
 	DeleteSlugs  []Slug `json:"delete_slugs"`
-	SlugDuration int    `json:"durarion_minutes,omitempty"`
+	SlugDuration int    `json:"duration_minutes,omitempty"`
 }
 
 type AddUsers struct {
