@@ -214,7 +214,7 @@ func (r *PostgresqlRep) AddSlugsUser(id int, slugs []models.Slug) error {
 	for _, slug := range slugs {
 		querySql := `INSERT INTO user_slug (user_id, slug_name) VALUES ($1, $2);`
 
-		err := r.DB.QueryRow(
+		_, err := r.DB.Exec(
 			querySql,
 			id,
 			slug.Name,
