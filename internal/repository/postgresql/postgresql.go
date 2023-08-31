@@ -119,7 +119,7 @@ func (r *PostgresqlRep) GetUsers() ([]models.AvitoUser, error) {
 
 func (r *PostgresqlRep) GetUserSlugs(id int) ([]models.Slug, error) {
 	var slugs []models.Slug
-	querySql := `SELECT slug_name FROM user_slug WHERE dt_end > NOW() OR dt_end IS NULL;`
+	querySql := fmt.Sprintf("SELECT slug_name FROM user_slug WHERE user_id = $1 AND (dt_end > NOW() OR dt_end IS NULL);", id)
 
 	rows, err := r.DB.Query(querySql)
 
