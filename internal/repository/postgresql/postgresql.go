@@ -234,7 +234,7 @@ func (r *PostgresqlRep) AddSlugsUser(id int, slugs []models.Slug) error {
 func (r *PostgresqlRep) GetCntRandomUsers(cntRandomUsers int) ([]int, error) {
 	var users []int
 
-	query := fmt.Sprintf("SELECT id FROM avito_user TABLESAMPLE SYSTEM(1) LIMIT %d;", cntRandomUsers)
+	query := fmt.Sprintf("SELECT id FROM avito_user ORDER BY RANDOM() LIMIT %d ;", cntRandomUsers)
 
 	rows, err := r.DB.Query(query)
 	if err != nil {
