@@ -7,7 +7,6 @@ import (
 )
 
 type Repository interface {
-	//AddArchive(slug models.Slug) error
 	AddSlug(slug models.Slug) error
 	GetSlug(id int) (models.Slug, error)
 	GetSlugs() ([]models.Slug, error)
@@ -28,4 +27,7 @@ type Repository interface {
 	GetCntUsers() (int, error)
 
 	GetUserArchive(id int, date time.Time) ([]models.Archive, error)
+
+	AddArchive(id int, slugs []models.Slug, assigment bool) error
+	GetUserBySlug(slug models.Slug) ([]models.UserSlug, error)
 }

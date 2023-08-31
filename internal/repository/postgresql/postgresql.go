@@ -324,3 +324,54 @@ func (r *PostgresqlRep) GetUserArchive(id int, date time.Time) ([]models.Archive
 	}
 	return archives, nil
 }
+
+func (r *PostgresqlRep) AddArchive(id int, slugs []models.Slug, assigment bool) error {
+	for _, slug := range slugs {
+		querySql := `INSERT INTO archive (user_id, slug_name, assigment, dt) VALUES ($1, $2, $3, $4);`
+
+		_, err := r.DB.Exec(
+			querySql,
+			id,
+			slug.Name,
+			assigment,
+			time.Now(),
+		)
+
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (r *PostgresqlRep) GetUserBySlug(slug models.Slug) ([]models.UserSlug, error) {
+	var userSlugs []models.UserSlug
+
+	query := "SELECT user_id, slug_name, dt_end FROM user_slug WHERE slug_name = $1;"
+
+	rows, err := r.DB.Query(
+		query,
+		slug.Name,
+	)
+	if err != nil {
+		return userSlugs, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var userSlug models.UserSlug
+		if err := rows.Scan(
+			&userSlug.UserId,
+			&userSlug.SlugId,
+			&userSlug.DTEnd,
+		); err != nil {
+			return userSlugs, err
+		}
+		userSlugs = append(userSlugs, userSlug)
+	}
+
+	if err := rows.Err(); err != nil {
+		return userSlugs, err
+	}
+	return userSlugs, nil
+}
