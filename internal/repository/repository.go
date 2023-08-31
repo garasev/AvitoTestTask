@@ -26,4 +26,6 @@ type Repository interface {
 
 	GetCntRandomUsers(cntRandomUsers int) ([]int, error)
 	GetCntUsers() (int, error)
+
+	GetUserArchive(id int, date time.Time) ([]models.Archive, error)
 }

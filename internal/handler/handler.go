@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"bytes"
+	"encoding/csv"
 	"encoding/json"
 	"errors"
 	"log/slog"
@@ -348,4 +350,68 @@ func (h *Handler) AddUserSlugs(w http.ResponseWriter, r *http.Request) {
 
 	errorResponse(w, "Success: All slugs have been added and removed accordingly for the user", http.StatusOK)
 	return
+}
+
+func (h *Handler) GetUserArchive(w http.ResponseWriter, r *http.Request) {
+	idStr := chi.URLParam(r, "id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		h.logger.Error(err.Error())
+		errorResponse(w, "Bad Request "+err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	user, err := h.service.CheckUser(id)
+	if err != nil {
+		h.logger.Error(err.Error())
+		errorResponse(w, "Internal Server Error: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if !user {
+		h.logger.Error("User with id = " + idStr + " does'n exists")
+		errorResponse(w, "User with id = "+idStr+" does'n exists", http.StatusBadRequest)
+		return
+	}
+
+	year, err := strconv.Atoi(r.URL.Query().Get("year"))
+	if err != nil {
+		h.logger.Error(err.Error())
+		errorResponse(w, "Internal Server Error: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if year > time.Now().Year() {
+		h.logger.Error("Bad Request: year incorrect")
+		errorResponse(w, "Bad Request: year incorrect", http.StatusBadRequest)
+		return
+	}
+	month, err := strconv.Atoi(r.URL.Query().Get("month"))
+	data := time.Date(year, time.Month(month), 1, 0, 0, 0, 0, time.UTC)
+
+	archives, err := h.service.GetUserArchive(id, data)
+	if err != nil {
+		h.logger.Error(err.Error())
+		errorResponse(w, "Internal Server Error: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "text/csv")
+	w.Header().Set("Content-Disposition", "attachment; filename=file.csv")
+
+	b := &bytes.Buffer{}
+	wr := csv.NewWriter(b)
+
+	for _, arch := range archives {
+		err = wr.Write(arch.Write())
+		if err != nil {
+			h.logger.Error(err.Error())
+			errorResponse(w, "Internal Server Error: "+err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+	wr.Flush()
+
+	if err := wr.Error(); err != nil {
+		h.logger.Error("Error flushing CSV writer:" + err.Error())
+		errorResponse(w, "Error flushing CSV writer:"+err.Error(), http.StatusInternalServerError)
+		return
+	}
 }

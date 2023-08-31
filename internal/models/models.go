@@ -1,6 +1,9 @@
 package models
 
-import "time"
+import (
+	"strconv"
+	"time"
+)
 
 type Slug struct {
 	Name string `json:"name"`
@@ -17,6 +20,14 @@ type Archive struct {
 	SlugId    int       `json:"slug_id"`
 	Assigment bool      `json:"assigment"`
 	DT        time.Time `json:"dt"`
+}
+
+func (a *Archive) Write() []string {
+	return []string{
+		strconv.Itoa(a.UserId),
+		strconv.Itoa(a.SlugId),
+		strconv.FormatBool(a.Assigment),
+		a.DT.Format("1/_2/2006 15:04:05")}
 }
 
 type AvitoUser struct {

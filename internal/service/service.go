@@ -87,3 +87,7 @@ func (s *Service) DeleteSlugsUser(id int, slugs []models.Slug) error {
 func (s *Service) GetUserSlugs(id int) ([]models.Slug, error) {
 	return s.repo.GetUserSlugs(id)
 }
+
+func (s *Service) GetUserArchive(id int, date time.Time) ([]models.Archive, error) {
+	return s.repo.GetUserArchive(id, date)
+}

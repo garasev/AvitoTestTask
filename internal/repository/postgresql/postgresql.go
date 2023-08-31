@@ -290,3 +290,37 @@ func (r *PostgresqlRep) DeleteSlugsUser(id int, slugs []models.Slug) error {
 	}
 	return nil
 }
+
+func (r *PostgresqlRep) GetUserArchive(id int, date time.Time) ([]models.Archive, error) {
+	var archives []models.Archive
+
+	query := "SELECT user_id, slug_name, assignment, dt FROM archive WHERE user_id = $1 AND dt > $2;"
+
+	rows, err := r.DB.Query(
+		query,
+		id,
+		date,
+	)
+	if err != nil {
+		return archives, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var archive models.Archive
+		if err := rows.Scan(
+			&archive.UserId,
+			&archive.SlugId,
+			&archive.Assigment,
+			&archive.DT,
+		); err != nil {
+			return archives, err
+		}
+		archives = append(archives, archive)
+	}
+
+	if err := rows.Err(); err != nil {
+		return archives, err
+	}
+	return archives, nil
+}
