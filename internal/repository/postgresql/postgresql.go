@@ -370,7 +370,7 @@ func (r *PostgresqlRep) GetUserBySlug(slug models.Slug) ([]models.UserSlug, erro
 		var userSlug models.UserSlug
 		if err := rows.Scan(
 			&userSlug.UserId,
-			&userSlug.SlugId,
+			&userSlug.SlugName,
 			&userSlug.DTEnd,
 		); err != nil {
 			return userSlugs, err
