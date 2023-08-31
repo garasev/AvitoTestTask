@@ -9,4 +9,5 @@ type Repository interface {
 	GetSlugs() ([]models.Slug, error)
 	DeleteSlug(slug models.Slug) error
 	AddUsers(cnt int) error
+	GetUsers() ([]models.AvitoUser, error)
 }

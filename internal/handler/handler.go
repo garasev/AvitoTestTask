@@ -147,14 +147,14 @@ func (h *Handler) DeleteSlug(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) GetUsers(w http.ResponseWriter, r *http.Request) {
-	slugs, err := h.service.GetSlugs()
+	users, err := h.service.GetUsers()
 	if err != nil {
 		h.logger.Error(err.Error())
 		errorResponse(w, "Internal Server Error: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	jsonSlugs, err := json.Marshal(slugs)
+	jsonUsers, err := json.Marshal(users)
 	if err != nil {
 		h.logger.Error(err.Error())
 		errorResponse(w, "Internal Server Error: "+err.Error(), http.StatusInternalServerError)
@@ -163,7 +163,7 @@ func (h *Handler) GetUsers(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write(jsonSlugs)
+	w.Write(jsonUsers)
 }
 
 func (h *Handler) GetUserSlugs(w http.ResponseWriter, r *http.Request) {
@@ -207,6 +207,6 @@ func (h *Handler) AddUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	errorResponse(w, "Users added:"+cntStr, http.StatusOK)
 	return
 }

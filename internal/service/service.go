@@ -31,8 +31,8 @@ func (s *Service) DeleteSlug(slug models.Slug) error {
 	return s.repo.DeleteSlug(slug)
 }
 
-func (s *Service) GetUsers(slug models.Slug) error {
-	return s.repo.DeleteSlug(slug)
+func (s *Service) GetUsers() ([]models.AvitoUser, error) {
+	return s.repo.GetUsers()
 }
 
 func (s *Service) AddUsers(cnt int) error {
