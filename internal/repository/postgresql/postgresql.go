@@ -358,7 +358,7 @@ func (r *PostgresqlRep) AddArchive(id int, slugs []models.Slug, assigment bool) 
 func (r *PostgresqlRep) GetUserBySlug(slug models.Slug) ([]models.UserSlug, error) {
 	var userSlugs []models.UserSlug
 
-	query := fmt.Sprintf(`SELECT user_id, slug_name, dt_end FROM user_slug WHERE slug_name = '%s';`, slug.Name)
+	query := fmt.Sprintf(`SELECT user_id, slug_name FROM user_slug WHERE slug_name = '%s';`, slug.Name)
 
 	rows, err := r.DB.Query(query)
 	if err != nil {
@@ -371,7 +371,6 @@ func (r *PostgresqlRep) GetUserBySlug(slug models.Slug) ([]models.UserSlug, erro
 		if err := rows.Scan(
 			&userSlug.UserId,
 			&userSlug.SlugName,
-			&userSlug.DTEnd,
 		); err != nil {
 			return userSlugs, err
 		}
