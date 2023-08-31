@@ -84,3 +84,36 @@ $ make stop
 - **Путь**: `/slug/user/{id}`
 - **Обработчик**: `handler.AddUserSlugs`
 - **Тело запроса**: JSON объект с данными сегмента
+
+
+### AddDeleteSlugs
+
+Содержит данные для добавления и удаления сегментов.
+
+#### Поля:
+
+- `AddSlugs` (массив Slug): Массив сегментов для добавления.
+- `DeleteSlugs` (массив Slug): Массив сегментов для удаления.
+- `SlugDuration` (целое число): Продолжительность сегмента в минутах (необязательное поле).
+
+Пример использования:
+
+```json
+{
+  "add_slugs": [
+    {
+      "name": "AVITO_VOICE_MESSAGES1",
+      "user_percent": 50
+    },
+    {
+      "name": "AVITO_VOICE_MESSAGES2",
+      "user_percent": 100
+    }
+  ],
+  "delete_slugs": [
+    {
+      "name": "AVITO_VOICE_MESSAGES3"
+    }
+  ],
+  "duration_minutes": 60
+}
