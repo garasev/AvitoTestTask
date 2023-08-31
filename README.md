@@ -136,7 +136,7 @@ $ make stop
 {
   "user_cnt": 5
 }
-
+```
 
 ### Slug - JSON
 
@@ -152,7 +152,7 @@ $ make stop
 {
   "name": "AVITO_VOICE_MESSAGES"
 }
-
+```
 
 ### AddSlug - JSON
 
@@ -170,3 +170,4 @@ $ make stop
   "name": "AVITO_VOICE_MESSAGES",
   "user_percent": 50
 }
+```
