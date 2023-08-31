@@ -145,3 +145,68 @@ func (h *Handler) DeleteSlug(w http.ResponseWriter, r *http.Request) {
 	errorResponse(w, "Successful deletion", http.StatusNoContent)
 	return
 }
+
+func (h *Handler) GetUsers(w http.ResponseWriter, r *http.Request) {
+	slugs, err := h.service.GetSlugs()
+	if err != nil {
+		h.logger.Error(err.Error())
+		errorResponse(w, "Internal Server Error: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	jsonSlugs, err := json.Marshal(slugs)
+	if err != nil {
+		h.logger.Error(err.Error())
+		errorResponse(w, "Internal Server Error: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonSlugs)
+}
+
+func (h *Handler) GetUserSlugs(w http.ResponseWriter, r *http.Request) {
+	slugs, err := h.service.GetSlugs()
+	if err != nil {
+		h.logger.Error(err.Error())
+		errorResponse(w, "Internal Server Error: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	jsonSlugs, err := json.Marshal(slugs)
+	if err != nil {
+		h.logger.Error(err.Error())
+		errorResponse(w, "Internal Server Error: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonSlugs)
+}
+
+func (h *Handler) AddUsers(w http.ResponseWriter, r *http.Request) {
+	cntStr := chi.URLParam(r, "cnt")
+	cnt, err := strconv.Atoi(cntStr)
+	if err != nil {
+		h.logger.Error(err.Error())
+		errorResponse(w, "Bad Request "+err.Error(), http.StatusBadRequest)
+		return
+	}
+	if cnt <= 0 {
+		h.logger.Error("The number of adding users must be greater than 0.")
+		errorResponse(w, "The number of adding users must be greater than 0.", http.StatusBadRequest)
+		return
+	}
+
+	err = h.service.AddUsers(cnt)
+	if err != nil {
+		h.logger.Error(err.Error())
+		errorResponse(w, "Internal Server Error: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	return
+}

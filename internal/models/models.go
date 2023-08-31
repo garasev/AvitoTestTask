@@ -18,3 +18,7 @@ type Archive struct {
 	Assigment bool      `json:"assigment"`
 	DT        time.Time `json:"dt"`
 }
+
+type AvitoUser struct {
+	Id int `json:"id"`
+}

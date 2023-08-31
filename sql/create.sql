@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS slug (
 CREATE TABLE IF NOT EXISTS user_slug (
     user_id INTEGER,
 	slug_id INTEGER REFERENCES slug(id),
-	dt TIMESTAMP,
+	dt_end TIMESTAMP DEFAULT NULL,
 	PRIMARY KEY (user_id, slug_id)
 );
 
@@ -16,4 +16,8 @@ CREATE TABLE IF NOT EXISTS archive (
 	slug_id INTEGER,
 	assignment BOOL,
 	dt TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS avito_user (
+	id serial PRIMARY KEY
 );

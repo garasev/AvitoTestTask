@@ -30,3 +30,11 @@ func (s *Service) AddSlug(slug models.Slug) (int, error) {
 func (s *Service) DeleteSlug(slug models.Slug) error {
 	return s.repo.DeleteSlug(slug)
 }
+
+func (s *Service) GetUsers(slug models.Slug) error {
+	return s.repo.DeleteSlug(slug)
+}
+
+func (s *Service) AddUsers(cnt int) error {
+	return s.repo.AddUsers(cnt)
+}
