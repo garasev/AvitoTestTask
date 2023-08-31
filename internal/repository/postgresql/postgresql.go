@@ -321,7 +321,7 @@ func (r *PostgresqlRep) GetUserArchive(id int, date time.Time) ([]models.Archive
 		var archive models.Archive
 		if err := rows.Scan(
 			&archive.UserId,
-			&archive.SlugId,
+			&archive.SlugName,
 			&archive.Assigment,
 			&archive.DT,
 		); err != nil {

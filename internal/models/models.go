@@ -17,7 +17,7 @@ type UserSlug struct {
 
 type Archive struct {
 	UserId    int       `json:"user_id"`
-	SlugId    int       `json:"slug_id"`
+	SlugName  string    `json:"slug_name"`
 	Assigment bool      `json:"assigment"`
 	DT        time.Time `json:"dt"`
 }
@@ -25,7 +25,7 @@ type Archive struct {
 func (a *Archive) Write() []string {
 	return []string{
 		strconv.Itoa(a.UserId),
-		strconv.Itoa(a.SlugId),
+		a.SlugName,
 		strconv.FormatBool(a.Assigment),
 		a.DT.Format("1/_2/2006 15:04:05")}
 }
