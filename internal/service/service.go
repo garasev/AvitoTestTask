@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/garasev/AvitoTestTask/internal/models"
 	"github.com/garasev/AvitoTestTask/internal/repository"
@@ -46,7 +47,7 @@ func (s *Service) AddSlug(slug models.Slug, percent int) ([]int, error) {
 	fmt.Println(users)
 	slugs := []models.Slug{slug}
 	for _, userId := range users {
-		err = s.repo.AddSlugsUser(userId, slugs)
+		err = s.AddSlugsUser(userId, slugs, 0)
 		if err != nil {
 			return users, err
 		}
@@ -75,7 +76,8 @@ func (s *Service) CheckSlugs(slugs []models.Slug) (bool, error) {
 	return s.repo.CheckSlugsExist(slugs)
 }
 
-func (s *Service) AddSlugsUser(id int, slugs []models.Slug) error {
+func (s *Service) AddSlugsUser(id int, slugs []models.Slug, duration time.Duration) error {
+
 	return s.repo.AddSlugsUser(id, slugs)
 }
 

@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/garasev/AvitoTestTask/internal/models"
 	"github.com/garasev/AvitoTestTask/internal/service"
@@ -332,7 +333,7 @@ func (h *Handler) AddUserSlugs(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.service.AddSlugsUser(id, slugs.AddSlugs)
+	err = h.service.AddSlugsUser(id, slugs.AddSlugs, time.Duration(slugs.SlugDuration)*time.Minute)
 	if err != nil {
 		h.logger.Error(err.Error())
 		errorResponse(w, "Internal Server Error: "+err.Error(), http.StatusInternalServerError)

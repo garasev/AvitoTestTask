@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/garasev/AvitoTestTask/internal/models"
 )
@@ -214,14 +215,21 @@ func (r *PostgresqlRep) CheckSlugsExist(slugs []models.Slug) (bool, error) {
 	return true, nil
 }
 
-func (r *PostgresqlRep) AddSlugsUser(id int, slugs []models.Slug) error {
+func (r *PostgresqlRep) AddSlugsUser(id int, slugs []models.Slug, duration time.Duration) error {
+	var endDate time.Time
+
+	if duration != 0 {
+		endDate = time.Now().Add(duration)
+	}
+
 	for _, slug := range slugs {
-		querySql := `INSERT INTO user_slug (user_id, slug_name) VALUES ($1, $2) ON CONFLICT DO NOTHING;`
+		querySql := `INSERT INTO user_slug (user_id, slug_name, dt_end) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING;`
 
 		_, err := r.DB.Exec(
 			querySql,
 			id,
 			slug.Name,
+			endDate,
 		)
 
 		if err != nil {
