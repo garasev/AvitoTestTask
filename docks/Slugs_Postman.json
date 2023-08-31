@@ -1,0 +1,98 @@
+{
+	"info": {
+		"_postman_id": "27f578b9-cb75-4f0b-9553-279a210f9bb3",
+		"name": "Slugs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16569669",
+		"_collection_link": "https://www.postman.com/martian-desert-835541/workspace/avitotesttask/collection/16569669-27f578b9-cb75-4f0b-9553-279a210f9bb3?action=share&source=collection_link&creator=16569669"
+	},
+	"item": [
+		{
+			"name": "Получение всех сегментов",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://0.0.0.0:8080/slug/",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "8080",
+					"path": [
+						"slug",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Добавление Сегмента",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"AVITO_VOICE_MESSAGES2\",\n    \"user_percent\": 100\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:8080/slug/",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "8080",
+					"path": [
+						"slug",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Удаление сегмента",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"AVITO_VOICE_MESSAGES2\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:8080/slug/",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "8080",
+					"path": [
+						"slug",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
