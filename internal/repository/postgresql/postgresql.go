@@ -327,7 +327,7 @@ func (r *PostgresqlRep) GetUserArchive(id int, date time.Time) ([]models.Archive
 
 func (r *PostgresqlRep) AddArchive(id int, slugs []models.Slug, assigment bool) error {
 	for _, slug := range slugs {
-		querySql := `INSERT INTO archive (user_id, slug_name, assigment, dt) VALUES ($1, $2, $3, $4);`
+		querySql := `INSERT INTO archive (user_id, slug_name, assignment, dt) VALUES ($1, $2, $3, $4);`
 
 		_, err := r.DB.Exec(
 			querySql,
