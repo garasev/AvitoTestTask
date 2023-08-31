@@ -22,7 +22,7 @@ func NewPostgresRepo(conn *sql.DB) *PostgresqlRep {
 func (r *PostgresqlRep) AddSlug(slug models.Slug) error {
 	querySql := `INSERT INTO slug (name) VALUES ($1) RETURNING id;`
 
-	err := r.DB.QueryRow(
+	_, err := r.DB.Exec(
 		querySql,
 		slug.Name,
 	)
