@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/garasev/AvitoTestTask/internal/models"
 	"github.com/garasev/AvitoTestTask/internal/service"
@@ -87,12 +88,12 @@ func (h *Handler) AddSlug(w http.ResponseWriter, r *http.Request) {
 		errorResponse(w, "Content Type is not application/json", http.StatusUnsupportedMediaType)
 		return
 	}
-	var slug models.Slug
+	var addSlug models.AddSlug
 	var unmarshalErr *json.UnmarshalTypeError
 
 	decoder := json.NewDecoder(r.Body)
 	decoder.DisallowUnknownFields()
-	err := decoder.Decode(&slug)
+	err := decoder.Decode(&addSlug)
 	if err != nil {
 		h.logger.Error(err.Error())
 		if errors.As(err, &unmarshalErr) {
@@ -102,10 +103,30 @@ func (h *Handler) AddSlug(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	err = h.service.AddSlug(slug)
+	if addSlug.Percent < 0 || addSlug.Percent > 100 {
+		h.logger.Error("Percent incorrect")
+		errorResponse(w, "Percent incorrect", http.StatusBadRequest)
+		return
+	}
+	users, err := h.service.AddSlug(
+		models.Slug{Name: addSlug.Name},
+		addSlug.Percent,
+	)
 	if err != nil {
 		h.logger.Error(err.Error())
-		errorResponse(w, "Slug with the same name already exists", http.StatusConflict)
+		errorResponse(w, "Internal Server Error: "+err.Error(), http.StatusConflict)
+		return
+	}
+	if users != nil {
+		result := strings.Join(func() []string {
+			userStrings := make([]string, len(users))
+			for i, user := range users {
+				userStrings[i] = strconv.Itoa(user)
+			}
+			return userStrings
+		}(), ", ")
+		h.logger.Info("Success: new slug was added for users with id: " + result)
+		errorResponse(w, "Success: new slug was added for users with id: "+result, http.StatusOK)
 		return
 	}
 	h.logger.Info("Success: new slug was added")

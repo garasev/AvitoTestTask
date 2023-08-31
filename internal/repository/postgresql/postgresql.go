@@ -216,7 +216,7 @@ func (r *PostgresqlRep) CheckSlugsExist(slugs []models.Slug) (bool, error) {
 
 func (r *PostgresqlRep) AddSlugsUser(id int, slugs []models.Slug) error {
 	for _, slug := range slugs {
-		querySql := `INSERT INTO user_slug (user_id, slug_name) VALUES ($1, $2);`
+		querySql := `INSERT INTO user_slug (user_id, slug_name) VALUES ($1, $2) ON CONFLICT (unique_column) DO NOTHING;`
 
 		_, err := r.DB.Exec(
 			querySql,
@@ -231,20 +231,37 @@ func (r *PostgresqlRep) AddSlugsUser(id int, slugs []models.Slug) error {
 	return nil
 }
 
-func (r *PostgresqlRep) DeleteSlugsUser(id int, slugs []models.Slug) error {
-	for _, slug := range slugs {
-		querySql := `DELETE FROM user_slug WHERE user_id = $1 AND slug_name = $2;`
+func (r *PostgresqlRep) GetCntRandomUsers(cntRandomUsers int) ([]int, error) {
+	var users []int
 
-		_, err := r.DB.Exec(
-			querySql,
-			id,
-			slug.Name,
-		)
+	query := fmt.Sprintf("SELECT id FROM avito_user TABLESAMPLE SYSTEM(1) LIMIT %d;", cntRandomUsers)
 
-		if err != nil {
-			return err
+	rows, err := r.DB.Query(query)
+	if err != nil {
+		return users, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var id int
+		if err := rows.Scan(&id); err != nil {
+			return users, err
 		}
+		users = append(users, id)
 	}
 
-	return nil
+	if err := rows.Err(); err != nil {
+		return users, err
+	}
+	return users, nil
+}
+
+func (r *PostgresqlRep) GetCntUsers() (int, error) {
+	var count int
+	query := "SELECT COUNT(*) FROM avito_user;"
+	err := r.DB.QueryRow(query).Scan(&count)
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
 }

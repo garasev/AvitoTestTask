@@ -31,3 +31,8 @@ type AddDeleteSlugs struct {
 type AddUsers struct {
 	Count int `json:"user_cnt"`
 }
+
+type AddSlug struct {
+	Name    string `json:"name"`
+	Percent int    `json:"user_percent,omitempty"`
+}

@@ -23,8 +23,32 @@ func (s *Service) GetSlugs() ([]models.Slug, error) {
 	return s.repo.GetSlugs()
 }
 
-func (s *Service) AddSlug(slug models.Slug) error {
-	return s.repo.AddSlug(slug)
+func (s *Service) AddSlug(slug models.Slug, percent int) ([]int, error) {
+	var users []int
+	err := s.repo.AddSlug(slug)
+	if err != nil {
+		return nil, err
+	}
+
+	cnt, err := s.repo.GetCntUsers()
+	if err != nil {
+		return nil, err
+	}
+
+	cntRandomUser := (cnt * percent) / 100
+	users, err = s.repo.GetCntRandomUsers(cntRandomUser)
+	if err != nil {
+		return nil, err
+	}
+	slugs := []models.Slug{slug}
+	for _, userId := range users {
+		err = s.repo.AddSlugsUser(userId, slugs)
+		if err != nil {
+			return users, err
+		}
+	}
+
+	return users, nil
 }
 
 func (s *Service) DeleteSlug(slug models.Slug) error {
