@@ -172,6 +172,10 @@ func (r *PostgresqlRep) CheckUserExist(id int) (bool, error) {
 }
 
 func (r *PostgresqlRep) CheckSlugsExist(slugs []models.Slug) (bool, error) {
+	if len(slugs) == 0 {
+		return true, nil
+	}
+
 	placeholders := make([]string, len(slugs))
 	values := make([]interface{}, len(slugs))
 
@@ -179,12 +183,9 @@ func (r *PostgresqlRep) CheckSlugsExist(slugs []models.Slug) (bool, error) {
 		placeholders[i] = fmt.Sprintf("$%d", i+1)
 		values[i] = slug.Name
 	}
-	fmt.Println(slugs)
-	fmt.Println(values)
-	fmt.Println(placeholders)
-	fmt.Println(strings.Join(placeholders, ", "))
+
 	query := fmt.Sprintf("SELECT name FROM slug WHERE name IN (%s)", strings.Join(placeholders, ", "))
-	fmt.Println(query)
+
 	rows, err := r.DB.Query(query, values...)
 	if err != nil {
 		return false, err
