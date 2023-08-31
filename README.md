@@ -79,7 +79,7 @@ $ make stop
 - **Метод**: POST
 - **Путь**: `/slug/user`
 - **Обработчик**: `handler.AddUsers`
-- **Тело запроса**: [AddUsers - JSON](### AddUsers - JSON)
+- **Тело запроса**: AddUsers - JSON
 
 #### Добавление сегментов пользователю по ID
 
