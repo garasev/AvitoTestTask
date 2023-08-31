@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS user_slug (
     user_id INTEGER,
 	slug_name VARCHAR(255) REFERENCES slug(name),
 	dt_end TIMESTAMP DEFAULT NULL,
-	PRIMARY KEY (user_id, slug_id)
+	PRIMARY KEY (user_id, slug_name)
 );
 
 CREATE TABLE IF NOT EXISTS archive (
