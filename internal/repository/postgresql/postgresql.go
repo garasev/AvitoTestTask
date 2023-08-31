@@ -216,7 +216,7 @@ func (r *PostgresqlRep) CheckSlugsExist(slugs []models.Slug) (bool, error) {
 
 func (r *PostgresqlRep) AddSlugsUser(id int, slugs []models.Slug) error {
 	for _, slug := range slugs {
-		querySql := `INSERT INTO user_slug (user_id, slug_name) VALUES ($1, $2) ON CONFLICT (unique_column) DO NOTHING;`
+		querySql := `INSERT INTO user_slug (user_id, slug_name) VALUES ($1, $2) ON CONFLICT DO NOTHING;`
 
 		_, err := r.DB.Exec(
 			querySql,
