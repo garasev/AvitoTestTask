@@ -83,10 +83,10 @@ $ make stop
 - **Метод**: POST
 - **Путь**: `/slug/user/{id}`
 - **Обработчик**: `handler.AddUserSlugs`
-- **Тело запроса**: JSON объект с данными сегмента
+- **Тело запроса**: AddDeleteSlugs - JSON
 
 
-### AddDeleteSlugs
+### AddDeleteSlugs - JSON
 
 Содержит данные для добавления и удаления сегментов.
 
