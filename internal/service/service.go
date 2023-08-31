@@ -57,19 +57,18 @@ func (s *Service) AddSlug(slug models.Slug, percent int) ([]int, error) {
 }
 
 func (s *Service) DeleteSlug(slug models.Slug) error {
-	fmt.Println(1)
 	userSlugs, err := s.repo.GetUserBySlug(slug)
 	if err != nil {
 		return err
 	}
-	fmt.Println(2)
+
 	for _, userSlug := range userSlugs {
 		err := s.repo.AddArchive(userSlug.UserId, []models.Slug{slug}, false)
 		if err != nil {
 			return err
 		}
 	}
-	fmt.Println(3)
+
 	return s.repo.DeleteSlug(slug)
 }
 
