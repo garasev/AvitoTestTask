@@ -1,6 +1,10 @@
 package repository
 
-import "github.com/garasev/AvitoTestTask/internal/models"
+import (
+	"time"
+
+	"github.com/garasev/AvitoTestTask/internal/models"
+)
 
 type Repository interface {
 	//AddArchive(slug models.Slug) error
@@ -15,7 +19,7 @@ type Repository interface {
 	CheckUserExist(id int) (bool, error)
 	CheckSlugsExist([]models.Slug) (bool, error)
 
-	AddSlugsUser(id int, slugs []models.Slug) error
+	AddSlugsUser(id int, slugs []models.Slug, duration time.Duration) error
 	DeleteSlugsUser(id int, slugs []models.Slug) error
 
 	GetUserSlugs(id int) ([]models.Slug, error)

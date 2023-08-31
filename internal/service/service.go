@@ -77,8 +77,7 @@ func (s *Service) CheckSlugs(slugs []models.Slug) (bool, error) {
 }
 
 func (s *Service) AddSlugsUser(id int, slugs []models.Slug, duration time.Duration) error {
-
-	return s.repo.AddSlugsUser(id, slugs)
+	return s.repo.AddSlugsUser(id, slugs, duration)
 }
 
 func (s *Service) DeleteSlugsUser(id int, slugs []models.Slug) error {
