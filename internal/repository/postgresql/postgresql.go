@@ -233,7 +233,7 @@ func (r *PostgresqlRep) AddSlugsUser(id int, slugs []models.Slug) error {
 
 func (r *PostgresqlRep) DeleteSlugsUser(id int, slugs []models.Slug) error {
 	for _, slug := range slugs {
-		querySql := `DELETE FROM user_slug WHERE user_id = $1 AND name = $2;`
+		querySql := `DELETE FROM user_slug WHERE user_id = $1 AND slug_name = $2;`
 
 		_, err := r.DB.Exec(
 			querySql,
