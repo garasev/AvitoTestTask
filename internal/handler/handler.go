@@ -393,8 +393,6 @@ func (h *Handler) GetUserArchive(w http.ResponseWriter, r *http.Request) {
 		errorResponse(w, "Internal Server Error: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
-	w.Header().Set("Content-Type", "text/csv")
-	w.Header().Set("Content-Disposition", "attachment; filename=file.csv")
 
 	b := &bytes.Buffer{}
 	wr := csv.NewWriter(b)
@@ -409,9 +407,8 @@ func (h *Handler) GetUserArchive(w http.ResponseWriter, r *http.Request) {
 	}
 	wr.Flush()
 
-	if err := wr.Error(); err != nil {
-		h.logger.Error("Error flushing CSV writer:" + err.Error())
-		errorResponse(w, "Error flushing CSV writer:"+err.Error(), http.StatusInternalServerError)
-		return
-	}
+	w.Header().Set("Content-Type", "text/csv")
+	w.Header().Set("Content-Disposition", "attachment; filename=data.csv")
+
+	w.Write(b.Bytes())
 }
