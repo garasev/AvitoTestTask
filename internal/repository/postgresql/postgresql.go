@@ -265,3 +265,20 @@ func (r *PostgresqlRep) GetCntUsers() (int, error) {
 	}
 	return count, nil
 }
+
+func (r *PostgresqlRep) DeleteSlugsUser(id int, slugs []models.Slug) error {
+	for _, slug := range slugs {
+		querySql := `DELETE FROM user_slug WHERE user_id = $1 AND slug_name = $2;`
+
+		_, err := r.DB.Exec(
+			querySql,
+			id,
+			slug.Name,
+		)
+
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
