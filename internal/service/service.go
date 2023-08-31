@@ -1,6 +1,8 @@
 package service
 
 import (
+	"fmt"
+
 	"github.com/garasev/AvitoTestTask/internal/models"
 	"github.com/garasev/AvitoTestTask/internal/repository"
 )
@@ -34,12 +36,14 @@ func (s *Service) AddSlug(slug models.Slug, percent int) ([]int, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	fmt.Println(cnt)
 	cntRandomUser := (cnt * percent) / 100
 	users, err = s.repo.GetCntRandomUsers(cntRandomUser)
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println(cntRandomUser)
+	fmt.Println(users)
 	slugs := []models.Slug{slug}
 	for _, userId := range users {
 		err = s.repo.AddSlugsUser(userId, slugs)
